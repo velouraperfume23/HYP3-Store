@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HYP3 Perfume — Product</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="img/logo/hyp3-logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<section id="header">
+  <a href="index.html" class="brand"><img src="img/logo/hyp3-logo.png" alt="HYP3"><span>HYP3</span></a>
+  <div class="nav-wrap">
+    <ul id="navbar">
+      <li><a href="index.html">Home</a></li>
+      <li><a class="active" href="shop.html">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="fav.html"><i class="fa-solid fa-heart"></i></a></li>
+      <li id="login-icon-item"><a href="login.html"><i class="fa-solid fa-arrow-right-to-bracket"></i></a></li>
+      <li id="logout-icon-item" style="display:none"><a href="#" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i></a></li>
+      <li class="cart-link"><a href="cart.html"><i class="fa-solid fa-basket-shopping"></i><span class="cart-count">0</span></a></li>    <a href="#" id="close"><i class="fa-solid fa-xmark"></i></a>
+
+    </ul>
+  </div>
+  <div id="mobile">
+    <a href="cart.html"><i class="fa-solid fa-basket-shopping"></i></a>
+    <i id="bar" class="fa-solid fa-bars"></i>
+  </div>
+</section>
+
+<section id="prodetails" class="section-p1">
+  <div class="single-pro-image">
+    <img src="img/products/volt.svg" width="100%" id="mainimg" alt="">
+    <div class="small-img-group">
+      <div class="small-img-col"><img src="img/products/volt.svg" width="100%" class="small-img" alt=""></div>
+      <div class="small-img-col"><img src="img/products/volt.svg" width="100%" class="small-img" alt=""></div>
+      <div class="small-img-col"><img src="img/products/volt.svg" width="100%" class="small-img" alt=""></div>
+      <div class="small-img-col"><img src="img/products/volt.svg" width="100%" class="small-img" alt=""></div>
+    </div>
+  </div>
+
+  <div class="single-pro-details">
+    <h6 id="p-category">Men/Perfume</h6>
+    <h4 class="p-title" id="p-title">Loading…</h4>
+    <div class="star p-rating" id="p-rating"></div>
+    <h2 class="p-price" id="dynamic-price">0.00 EG</h2>
+
+    <select id="bottle-select" onchange="updatePerfumeDetails()"></select>
+
+    <div class="qty-row">
+      <input type="number" id="product-quantity" value="1" min="1">
+      <button class="add-to-cart-btn" onclick="handleAddToCart()">Add to Cart</button>
+      <div class="fav-icon-container">
+        <i class="fa-solid fa-heart" id="fav-toggle-icon"></i>
+      </div>
+    </div>
+
+    <h4 class="p-details-title">Product Details</h4>
+    <span class="p-desc" id="p-desc"></span>
+    <div class="notes-row" id="notes-row"></div>
+  </div>
+</section>
+
+<section id="product1" class="section-p1">
+  <h2>You Might Also Like</h2>
+  <p>More from the HYP3 collection</p>
+  <div class="pro-container" id="related-products"></div>
+</section>
+
+<footer class="section-p1">
+  <div class="col">
+    <div class="foot-brand"><img src="img/logo/hyp3-logo.png" alt=""><span>HYP3</span></div>
+    <h4>Contact</h4>
+    <p><strong>Phone:</strong> 01002207754</p>
+    <p><strong>Hours:</strong> 24H Sunday – Thursday</p>
+    <div class="follow">
+      <h4>Follow us</h4>
+      <div class="icon">
+        <a href="https://www.instagram.com/hyp3.eg"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.tiktok.com/@hyp3_store_1"><i class="fab fa-tiktok"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <h4>About</h4>
+    <a href="about.html">About Us</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="cart.html">View Cart</a>
+    <a href="fav.html">My Wishlist</a>
+  </div>
+  <div class="col">
+    <h4>My Account</h4>
+    <a href="login.html">Sign In</a>
+    <a href="cart.html">View Cart</a>
+    <a href="fav.html">My Wishlist</a>
+    <a href="contact.html">Help</a>
+  </div>
+  <div class="col install">
+    <h4>Order With Us</h4>
+    <p>Checkout sends your order straight to our WhatsApp — no forms, no waiting.</p>
+  </div>
+  <div class="copyright">
+    <p>© 2026, HYP3 Perfume — All Rights Reserved</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

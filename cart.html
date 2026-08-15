@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Cart — HYP3 Perfume</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="img/logo/hyp3-logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<section id="header">
+  <a href="index.html" class="brand"><img src="img/logo/hyp3-logo.png" alt="HYP3"><span>HYP3</span></a>
+  <div class="nav-wrap">
+    <ul id="navbar">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="fav.html"><i class="fa-solid fa-heart"></i></a></li>
+      <li id="login-icon-item"><a href="login.html"><i class="fa-solid fa-arrow-right-to-bracket"></i></a></li>
+      <li id="logout-icon-item" style="display:none"><a href="#" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i></a></li>
+      <li class="cart-link"><a class="active" href="cart.html"><i class="fa-solid fa-basket-shopping"></i><span class="cart-count">0</span></a></li>    <a href="#" id="close"><i class="fa-solid fa-xmark"></i></a>
+
+    </ul>
+  </div>
+  <div id="mobile">
+    <a class="active" href="cart.html"><i class="fa-solid fa-basket-shopping"></i></a>
+    <i id="bar" class="fa-solid fa-bars"></i>
+  </div>
+</section>
+
+<section id="page-header">
+  <h2>Your Cart</h2>
+  <p>Review your luxury perfumes before checkout</p>
+</section>
+
+<section id="cart" class="section-p1">
+  <table width="100%">
+    <thead>
+      <tr>
+        <td>Remove</td>
+        <td>Image</td>
+        <td>Product</td>
+        <td>Price</td>
+        <td>Quantity</td>
+        <td>Subtotal</td>
+      </tr>
+    </thead>
+    <tbody id="cart-content"></tbody>
+  </table>
+</section>
+
+<section id="cart-add" class="section-p1">
+  <div id="coupon">
+    <h3>Apply Coupon</h3>
+    <div>
+      <input type="text" placeholder="Enter your coupon">
+      <button class="normal">Apply</button>
+    </div>
+  </div>
+
+  <div id="subtotal">
+    <h3>Cart Totals</h3>
+    <table>
+      <tr><td>Cart Subtotal</td><td id="items-subtotal">0 EG</td></tr>
+      <tr><td>Shipping</td><td>100 EG</td></tr>
+      <tr><td><strong>Total</strong></td><td><strong id="final-total">0 EG</strong></td></tr>
+    </table>
+    <button class="normal" onclick="sendCartToWhatsApp()">
+      <i class="fa-brands fa-whatsapp"></i> Checkout on WhatsApp
+    </button>
+    <div class="wa-note"><i class="fa-solid fa-circle-info"></i> We'll open WhatsApp with your order pre-filled — just hit send.</div>
+  </div>
+</section>
+
+<footer class="section-p1">
+  <div class="copyright">
+    <p>© 2026, HYP3 Perfume — All Rights Reserved</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Favorites — HYP3 Perfume</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="img/logo/hyp3-logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<section id="header">
+  <a href="index.html" class="brand"><img src="img/logo/hyp3-logo.png" alt="HYP3"><span>HYP3</span></a>
+  <div class="nav-wrap">
+    <ul id="navbar">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a class="active" href="fav.html"><i class="fa-solid fa-heart"></i></a></li>
+      <li id="login-icon-item"><a href="login.html"><i class="fa-solid fa-arrow-right-to-bracket"></i></a></li>
+      <li id="logout-icon-item" style="display:none"><a href="#" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i></a></li>
+      <li class="cart-link"><a href="cart.html"><i class="fa-solid fa-basket-shopping"></i><span class="cart-count">0</span></a></li>    <a href="#" id="close"><i class="fa-solid fa-xmark"></i></a>
+
+    </ul>
+  </div>
+  <div id="mobile">
+    <a href="cart.html"><i class="fa-solid fa-basket-shopping"></i></a>
+    <i id="bar" class="fa-solid fa-bars"></i>
+  </div>
+</section>
+
+<section id="page-header">
+  <h2>My Favorites</h2>
+  <p>Keep your favorite scents in one place</p>
+</section>
+
+<section id="cart" class="section-p1">
+  <table width="100%">
+    <thead>
+      <tr>
+        <td>Remove</td>
+        <td>Image</td>
+        <td>Product</td>
+        <td>Price</td>
+        <td>Add to Cart</td>
+      </tr>
+    </thead>
+    <tbody id="fav-content"></tbody>
+  </table>
+</section>
+
+<footer class="section-p1">
+  <div class="copyright">
+    <p>© 2026, HYP3 Perfume — All Rights Reserved</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
