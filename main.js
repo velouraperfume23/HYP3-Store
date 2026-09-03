@@ -11,6 +11,14 @@ const WHATSAPP_NUMBER = "201002207754"; // international format, no + or 00
 const SHIPPING_FEE = 100; // EGP
 
 /* ---------------------------------------------------------------------
+   PROMO CODES — add more codes here as needed: "CODE": discount fraction
+   --------------------------------------------------------------------- */
+const PROMO_CODES = {
+  "ALIX99": 0.20, // 20% off
+};
+let appliedPromo = JSON.parse(localStorage.getItem("HYP3_promo")) || null;
+
+/* ---------------------------------------------------------------------
    PRODUCT CATALOG — single source of truth for every page
    --------------------------------------------------------------------- */
 const PRODUCTS = [
@@ -18,99 +26,99 @@ const PRODUCTS = [
   { id: 1, name: "HYP3 Rose", category: "Women", image: "img/products/hyp3-rose.svg",
     rating: 5, notes: ["Damask Rose", "Vanilla"],
     desc: "A soft embrace of damask rose warmed by vanilla — romantic, warm, and effortlessly feminine.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 2, name: "Billionaire", category: "Men", image: "img/products/billionaire.svg",
     rating: 5, notes: ["Warm Cinnamon", "Aged Wood"],
     desc: "Warm cinnamon settling over aged, noble woods — heavy, oriental, and unmistakably confident.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 3, name: "Rosyer", category: "Women", image: "img/products/rosyer.svg",
     rating: 4, notes: ["Dewy Rose Petals", "Cranberry"],
     desc: "Dew-kissed rose petals brightened with tart cranberry — a fresh, modern take on a classic rose.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 4, name: "Velkris", category: "Men", image: "img/products/velkris.svg",
     rating: 4, notes: ["Fresh Pineapple", "Smoked Cedar"],
     desc: "Fresh pineapple over smoked cedarwood — a fruity-woody scent built for summer.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 5, name: "Aurelia Bloom", category: "Women", image: "img/products/aurelia-bloom.svg",
     rating: 5, notes: ["Pure Jasmine", "White Frangipani"],
     desc: "Pure jasmine in full bloom, softened by white frangipani — intoxicating without being heavy.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 6, name: "Zenthro", category: "Men", image: "img/products/zenthro.svg",
     rating: 4, notes: ["Sea Salt", "Lemon"],
     desc: "Refreshing sea salt and lemon — clean, aquatic, and effortlessly cool.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 7, name: "Celestia", category: "Women", image: "img/products/celestia.svg",
     rating: 5, notes: ["Liquid Amber", "Velvet Musk"],
     desc: "Warm liquid amber wrapped in velvet musk — a heavy, luxurious scent built for evening.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 8, name: "Targenix", category: "Men", image: "img/products/targenix.svg",
     rating: 4, notes: ["Fresh Grapefruit", "Vetiver"],
     desc: "Sharp grapefruit grounded in vetiver — citrus energy with real depth.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 9, name: "Luvira", category: "Women", image: "img/products/luvira.svg",
     rating: 4, notes: ["Iris Powder", "Warm Caramel"],
     desc: "Powdery iris meets warm caramel — sweet, soft, and lingering.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 10, name: "Luxeron", category: "Men", image: "img/products/luxeron.svg",
     rating: 5, notes: ["Oriental Oud", "Fine Leather"],
     desc: "Rich oud layered over fine leather — heavy, opulent, made for occasions that matter.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 11, name: "Sweet Berry", category: "Women", image: "img/products/sweet-berry.svg",
     rating: 4, notes: ["Wild Strawberry", "Red Berries"],
     desc: "Crisp wild strawberry and red berries — a bright, playful summer fruit blend.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 12, name: "Silvaris", category: "Men", image: "img/products/silvaris.svg",
     rating: 4, notes: ["Green Tea Leaves", "Calm Sandalwood"],
     desc: "Green tea and calm sandalwood — quiet, composed, ideal for the office.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 13, name: "Elivara", category: "Women", image: "img/products/elivara.svg",
     rating: 4, notes: ["French Lavender", "Orange Blossom"],
     desc: "French lavender fields meet delicate orange blossom — herbal, floral, and calming.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 14, name: "HYP3 Men", category: "Men", image: "img/products/hyp3-men.svg",
     rating: 4, notes: ["Cool Mint", "Cedar Smoke"],
     desc: "Cool mint over smoky cedar — sharp, magnetic, unmistakably present.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 15, name: "Aryra", category: "Women", image: "img/products/aryra.svg",
     rating: 5, notes: ["Coconut Milk", "White Florals"],
     desc: "Silky coconut milk layered with white florals — creamy, warm, and comforting.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 16, name: "Noctyron", category: "Men", image: "img/products/noctyron.svg",
     rating: 5, notes: ["Cardamom", "Aromatic Woods"],
     desc: "Warm cardamom and aromatic woods — a spiced, nocturnal scent for late nights.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 17, name: "Florayne", category: "Women", image: "img/products/florayne.svg",
     rating: 5, notes: ["Peony", "Water Pear"],
     desc: "Peony in bloom with juicy water pear — feminine, fresh, and effortlessly elegant.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 18, name: "Dravonix", category: "Men", image: "img/products/dravonix.svg",
     rating: 4, notes: ["Black Pepper", "Woody Resins"],
     desc: "Fiery black pepper over woody resins — bold, spiced, not for the faint-hearted.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 19, name: "Blush Era", category: "Women", image: "img/products/blush-era.svg",
     rating: 5, notes: ["Clean Powder", "Creamy White Musk"],
     desc: "Clean powder and creamy white musk — soft as skin, perfect for every day.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 20, name: "Xyron Black", category: "Men", image: "img/products/xyron-black.svg",
     rating: 5, notes: ["Bitter Almond", "Dark Berries"],
     desc: "Bitter almond and dark berries — mysterious and magnetic, built for the night.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 21, name: "White Valley", category: "Women", image: "img/products/white-valley.svg",
     rating: 4, notes: ["Clean Cotton", "Pure Musk"],
     desc: "Clean cotton and pure musk — simple, fresh, and effortlessly put-together.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 22, name: "Krylonis", category: "Men", image: "img/products/krylonis.svg",
     rating: 4, notes: ["Green Mint", "Sweet Tonka Bean"],
     desc: "Green mint and sweet tonka bean — fresh and warm at the same time.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 23, name: "Suger Cube", category: "Women", image: "img/products/suger-cube.svg",
     rating: 4, notes: ["Burnt Sugar", "Cotton Candy", "Vanilla"],
     desc: "Burnt sugar, cotton candy, and vanilla — a sweet, playful gourmand.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
   { id: 24, name: "Azureon", category: "Men", image: "img/products/azureon.svg",
     rating: 4, notes: ["Salty Sea Breeze", "Green Juniper"],
     desc: "Salty sea breeze and green juniper — loud, aquatic, built for summer.",
-    sizes: [{ label: "30 ML", price: 87.3 }, { label: "50 ML", price: 130.3 }] },
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
 ];
 
 function getProduct(id) { return PRODUCTS.find(p => p.id == id); }
@@ -194,6 +202,8 @@ function renderCart() {
   const el = document.getElementById("cart-content");
   if (!el) return;
 
+  const statusEl = document.getElementById("promo-status");
+
   if (cart.length === 0) {
     el.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-basket-shopping"></i>Your bag is waiting for its first HYP3 bottle.</div></td></tr>`;
     document.getElementById("items-subtotal").innerText = "0 EG";
@@ -215,8 +225,43 @@ function renderCart() {
     </tr>`;
   }).join("");
 
-  document.getElementById("items-subtotal").innerText = subtotal + " EG";
-  document.getElementById("final-total").innerText = (subtotal + SHIPPING_FEE) + " EG";
+  let discount = 0;
+  if (appliedPromo && PROMO_CODES[appliedPromo.code]) {
+    discount = subtotal * PROMO_CODES[appliedPromo.code];
+  }
+
+  document.getElementById("items-subtotal").innerText = subtotal.toFixed(2) + " EG";
+  document.getElementById("final-total").innerText = (subtotal - discount + SHIPPING_FEE).toFixed(2) + " EG";
+
+  if (statusEl) {
+    if (appliedPromo && PROMO_CODES[appliedPromo.code]) {
+      statusEl.innerHTML = `<span style="color:var(--mint)"><i class="fa-solid fa-circle-check"></i> Code "${appliedPromo.code}" applied — ${(PROMO_CODES[appliedPromo.code] * 100)}% off (−${discount.toFixed(2)} EG)</span> <a href="#" onclick="removePromoCode(); return false;" style="color:var(--ink-faint);text-decoration:underline;margin-left:8px;">Remove</a>`;
+    } else {
+      statusEl.innerHTML = "";
+    }
+  }
+}
+
+function applyPromoCode() {
+  const input = document.getElementById("promo-input");
+  if (!input) return;
+  const code = input.value.trim().toUpperCase();
+  if (!code) { toast("Enter a promo code first.", "fa-solid fa-triangle-exclamation"); return; }
+
+  if (PROMO_CODES[code]) {
+    appliedPromo = { code };
+    localStorage.setItem("HYP3_promo", JSON.stringify(appliedPromo));
+    toast(`Promo code applied — ${PROMO_CODES[code] * 100}% off!`, "fa-solid fa-tag");
+    renderCart();
+  } else {
+    toast("That promo code isn't valid.", "fa-solid fa-triangle-exclamation");
+  }
+}
+
+function removePromoCode() {
+  appliedPromo = null;
+  localStorage.removeItem("HYP3_promo");
+  renderCart();
 }
 
 /* ---------------------------------------------------------------------
@@ -368,11 +413,19 @@ function sendCartToWhatsApp() {
     body += `${i + 1}. *${item.name}*%0A   Qty: ${item.quantity} — ${lineTotal} EGP%0A%0A`;
   });
 
-  const finalTotal = itemsSubtotal + SHIPPING_FEE;
+  let discount = 0;
+  if (appliedPromo && PROMO_CODES[appliedPromo.code]) {
+    discount = itemsSubtotal * PROMO_CODES[appliedPromo.code];
+  }
+
+  const finalTotal = itemsSubtotal - discount + SHIPPING_FEE;
   body += `--------------------------%0A`;
-  body += `Subtotal: ${itemsSubtotal} EGP%0A`;
+  body += `Subtotal: ${itemsSubtotal.toFixed(2)} EGP%0A`;
+  if (discount > 0) {
+    body += `Promo (${appliedPromo.code}, ${PROMO_CODES[appliedPromo.code] * 100}% off): -${discount.toFixed(2)} EGP%0A`;
+  }
   body += `Shipping: ${SHIPPING_FEE} EGP%0A`;
-  body += `*Total: ${finalTotal} EGP*%0A%0A`;
+  body += `*Total: ${finalTotal.toFixed(2)} EGP*%0A%0A`;
   body += `Please confirm my order.`;
 
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${body}`, "_blank");

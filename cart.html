@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
 <title>Your Cart — HYP3 Perfume</title>
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="img/logo/hyp3-logo.png">
@@ -56,9 +56,10 @@
   <div id="coupon">
     <h3>Apply Coupon</h3>
     <div>
-      <input type="text" placeholder="Enter your coupon">
-      <button class="normal">Apply</button>
+      <input type="text" id="promo-input" placeholder="Enter your coupon">
+      <button class="normal" onclick="applyPromoCode()">Apply</button>
     </div>
+    <div id="promo-status" style="margin-top:10px;font-size:12.5px;"></div>
   </div>
 
   <div id="subtotal">

@@ -101,8 +101,10 @@ p{color:var(--ink-dim)}
 @media (max-width:992px){
   #navbar{position:fixed;top:0;right:-280px;width:260px;height:100vh;flex-direction:column;align-items:flex-start;
     gap:24px;padding:90px 30px 30px;background:linear-gradient(180deg,#070d0c,#05080a);border-left:1px solid var(--line);
-    transition:right .35s var(--ease);z-index:200}
-  #navbar.active{right:0;box-shadow:-20px 0 50px rgba(0,0,0,.6)}
+    transition:right .35s var(--ease),visibility 0s linear .35s;z-index:200;
+    visibility:hidden;pointer-events:none}
+  #navbar.active{right:0;box-shadow:-20px 0 50px rgba(0,0,0,.6);
+    visibility:visible;pointer-events:auto;transition:right .35s var(--ease)}
   #navbar li{width:100%}
   #close{display:block;position:absolute;top:26px;right:26px}
   #mobile{display:flex}
