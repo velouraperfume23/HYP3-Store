@@ -8,7 +8,103 @@
    CONFIG — edit these two lines to point checkout at your real number
    --------------------------------------------------------------------- */
 const WHATSAPP_NUMBER = "201002207754"; // international format, no + or 00
-const SHIPPING_FEE = 100; // EGP
+// Shipping is now location-based (see LOCATION-BASED SHIPPING section
+// below) — this flat value is only the fallback used if a visitor
+// somehow reaches a page with no location saved yet.
+const SHIPPING_FEE_FALLBACK = 100; // EGP
+
+// Your shop's coordinates — set these precisely to your real address.
+// Default below is an approximate Ain Shams, Cairo location; replace it.
+const SHOP_LOCATION = { lat: 30.1288, lng: 31.3196 };
+
+// Delivery pricing formula: base fee + per-km rate, straight-line distance.
+const SHIPPING_BASE_FEE = 30;   // EGP, flat part of every delivery
+const SHIPPING_PER_KM = 2.5;    // EGP per km from the shop
+const SHIPPING_MIN_FEE = 50;    // EGP, floor even for very close addresses
+
+// Manual fallback for visitors who deny location access — rough
+// per-governorate flat rates. Adjust freely.
+const CITY_SHIPPING_FALLBACK = {
+  "Cairo": 60,
+  "Giza": 65,
+  "Alexandria": 90,
+  "Qalyubia": 70,
+  "Other": 120,
+};
+
+/* ---------------------------------------------------------------------
+   LOCATION-BASED SHIPPING
+   --------------------------------------------------------------------- */
+function haversineDistanceKm(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function getShippingFee() {
+  const saved = JSON.parse(localStorage.getItem("HYP3_shipping") || "null");
+  if (saved && typeof saved.fee === "number") return saved.fee;
+  return SHIPPING_FEE_FALLBACK;
+}
+
+function setShippingFromCoords(lat, lng) {
+  const distanceKm = haversineDistanceKm(SHOP_LOCATION.lat, SHOP_LOCATION.lng, lat, lng);
+  const fee = Math.max(SHIPPING_MIN_FEE, SHIPPING_BASE_FEE + distanceKm * SHIPPING_PER_KM);
+  const rounded = Math.round(fee);
+  localStorage.setItem("HYP3_shipping", JSON.stringify({
+    fee: rounded, distanceKm: Math.round(distanceKm * 10) / 10, method: "gps",
+  }));
+  return rounded;
+}
+
+function setShippingFromCity(city) {
+  const fee = CITY_SHIPPING_FALLBACK[city] ?? CITY_SHIPPING_FALLBACK["Other"];
+  localStorage.setItem("HYP3_shipping", JSON.stringify({ fee, city, method: "manual" }));
+  return fee;
+}
+
+function hasShippingSet() {
+  return !!localStorage.getItem("HYP3_shipping");
+}
+
+function locateMe() {
+  const statusEl = document.getElementById("location-status");
+  if (!navigator.geolocation) {
+    if (statusEl) statusEl.innerText = "Location isn't supported on this device — pick your city manually below.";
+    return;
+  }
+  if (statusEl) statusEl.innerText = "Getting your location...";
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const fee = setShippingFromCoords(pos.coords.latitude, pos.coords.longitude);
+      if (statusEl) statusEl.innerText = `Delivery fee set: ${fee} EGP. Redirecting...`;
+      toast(`Delivery fee set to ${fee} EGP based on your location.`, "fa-solid fa-location-dot");
+      setTimeout(() => { window.location.href = "index.html"; }, 900);
+    },
+    () => {
+      if (statusEl) statusEl.innerText = "Couldn't get your location — pick your city manually below instead.";
+    }
+  );
+}
+
+function selectCityManually() {
+  const select = document.getElementById("city-select");
+  if (!select || !select.value) return;
+  const fee = setShippingFromCity(select.value);
+  toast(`Delivery fee set to ${fee} EGP for ${select.value}.`, "fa-solid fa-location-dot");
+  setTimeout(() => { window.location.href = "index.html"; }, 700);
+}
+
+function enforceLocationGate() {
+  const onLoginPage = window.location.pathname.endsWith("login.html");
+  if (!onLoginPage && !hasShippingSet()) {
+    window.location.href = "login.html";
+  }
+}
 
 /* ---------------------------------------------------------------------
    PROMO CODES — add more codes here as needed: "CODE": discount fraction
@@ -207,7 +303,8 @@ function renderCart() {
   if (cart.length === 0) {
     el.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-basket-shopping"></i>Your bag is waiting for its first HYP3 bottle.</div></td></tr>`;
     document.getElementById("items-subtotal").innerText = "0 EG";
-    document.getElementById("final-total").innerText = SHIPPING_FEE + " EG";
+    if (document.getElementById("shipping-fee")) document.getElementById("shipping-fee").innerText = getShippingFee() + " EG";
+    document.getElementById("final-total").innerText = getShippingFee() + " EG";
     return;
   }
 
@@ -231,7 +328,8 @@ function renderCart() {
   }
 
   document.getElementById("items-subtotal").innerText = subtotal.toFixed(2) + " EG";
-  document.getElementById("final-total").innerText = (subtotal - discount + SHIPPING_FEE).toFixed(2) + " EG";
+  if (document.getElementById("shipping-fee")) document.getElementById("shipping-fee").innerText = getShippingFee() + " EG";
+  document.getElementById("final-total").innerText = (subtotal - discount + getShippingFee()).toFixed(2) + " EG";
 
   if (statusEl) {
     if (appliedPromo && PROMO_CODES[appliedPromo.code]) {
@@ -398,6 +496,39 @@ function handleAddToCart() {
 /* ---------------------------------------------------------------------
    WHATSAPP CHECKOUT
    --------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------
+   DASHBOARD TRACKING — fire-and-forget calls to the Pages Functions.
+   These fail silently if the /api endpoints aren't deployed yet, so
+   the site works normally even before the dashboard is set up.
+   --------------------------------------------------------------------- */
+function trackVisit() {
+  try {
+    fetch("/api/track-visit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ page: window.location.pathname, referrer: document.referrer }),
+    }).catch(() => {});
+  } catch (e) {}
+}
+
+function trackOrder(subtotal, discount, total, promoCode) {
+  try {
+    const sizeMatch = (name) => {
+      const m = /\((30|50) ML\)/.exec(name || "");
+      return m ? `${m[1]} ML` : null;
+    };
+    fetch("/api/track-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        items: cart.map(i => `${i.name} x${i.quantity}`).join(", "),
+        itemsDetail: cart.map(i => ({ name: i.name, size: sizeMatch(i.name), qty: i.quantity, price: i.price })),
+        subtotal, discount, shipping: getShippingFee(), total, promoCode,
+      }),
+    }).catch(() => {});
+  } catch (e) {}
+}
+
 function sendCartToWhatsApp() {
   if (cart.length === 0) {
     toast("Your bag is empty — add a scent first.", "fa-solid fa-triangle-exclamation");
@@ -418,16 +549,17 @@ function sendCartToWhatsApp() {
     discount = itemsSubtotal * PROMO_CODES[appliedPromo.code];
   }
 
-  const finalTotal = itemsSubtotal - discount + SHIPPING_FEE;
+  const finalTotal = itemsSubtotal - discount + getShippingFee();
   body += `--------------------------%0A`;
   body += `Subtotal: ${itemsSubtotal.toFixed(2)} EGP%0A`;
   if (discount > 0) {
     body += `Promo (${appliedPromo.code}, ${PROMO_CODES[appliedPromo.code] * 100}% off): -${discount.toFixed(2)} EGP%0A`;
   }
-  body += `Shipping: ${SHIPPING_FEE} EGP%0A`;
+  body += `Shipping: ${getShippingFee()} EGP%0A`;
   body += `*Total: ${finalTotal.toFixed(2)} EGP*%0A%0A`;
   body += `Please confirm my order.`;
 
+  trackOrder(itemsSubtotal, discount, finalTotal, appliedPromo ? appliedPromo.code : null);
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${body}`, "_blank");
 }
 
@@ -551,6 +683,8 @@ function setupShopFilters() {
    BOOT
    --------------------------------------------------------------------- */
 window.addEventListener("DOMContentLoaded", () => {
+  enforceLocationGate();
+  trackVisit();
   manageAuth();
   setupMobileNav();
   ensureSearchBox();

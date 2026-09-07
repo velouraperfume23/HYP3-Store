@@ -14,6 +14,25 @@
   <div class="brand"><img src="img/logo/hyp3-logo.png" alt="" style="width:36px;margin:0 auto 10px;display:block"></div>
   <h1 class="brand-logo">HYP3</h1>
 
+  <div style="margin-bottom:24px;padding:20px;background:var(--panel-soft);border:1px solid var(--line);">
+    <h4 style="font-size:14px;margin-bottom:10px;"><i class="fa-solid fa-location-dot" style="color:var(--mint);"></i> Set Your Delivery Location</h4>
+    <p style="font-size:12.5px;margin-bottom:16px;">We use this to calculate your delivery fee before you shop.</p>
+    <button class="normal" style="width:100%;text-align:center;margin-bottom:12px;" onclick="locateMe()">
+      <i class="fa-solid fa-location-crosshairs"></i> Use My Location
+    </button>
+    <p style="font-size:11.5px;text-align:center;color:var(--ink-faint);margin-bottom:10px;">or pick your city manually</p>
+    <select id="city-select" style="width:100%;padding:12px;background:var(--void);border:1px solid var(--line);color:var(--ink);margin-bottom:10px;">
+      <option value="">Select your city...</option>
+      <option value="Cairo">Cairo</option>
+      <option value="Giza">Giza</option>
+      <option value="Alexandria">Alexandria</option>
+      <option value="Qalyubia">Qalyubia</option>
+      <option value="Other">Other</option>
+    </select>
+    <button class="btn-auth" style="margin-bottom:0;" onclick="selectCityManually()">Confirm City</button>
+    <div id="location-status" style="font-size:12px;color:var(--mint);margin-top:10px;min-height:16px;"></div>
+  </div>
+
   <div id="signup-form">
     <div class="input-group"><input type="text" placeholder="Full Name" id="sign-name"></div>
     <div class="input-group"><input type="email" placeholder="Email Address" id="sign-email"></div>
