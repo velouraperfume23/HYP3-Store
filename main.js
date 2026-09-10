@@ -71,6 +71,12 @@ function hasShippingSet() {
   return !!localStorage.getItem("HYP3_shipping");
 }
 
+function returnAfterLocation() {
+  const dest = sessionStorage.getItem("HYP3_return_to") || "index.html";
+  sessionStorage.removeItem("HYP3_return_to");
+  window.location.href = dest;
+}
+
 function locateMe() {
   const statusEl = document.getElementById("location-status");
   if (!navigator.geolocation) {
@@ -83,7 +89,7 @@ function locateMe() {
       const fee = setShippingFromCoords(pos.coords.latitude, pos.coords.longitude);
       if (statusEl) statusEl.innerText = `Delivery fee set: ${fee} EGP. Redirecting...`;
       toast(`Delivery fee set to ${fee} EGP based on your location.`, "fa-solid fa-location-dot");
-      setTimeout(() => { window.location.href = "index.html"; }, 900);
+      setTimeout(returnAfterLocation, 900);
     },
     () => {
       if (statusEl) statusEl.innerText = "Couldn't get your location — pick your city manually below instead.";
@@ -96,12 +102,17 @@ function selectCityManually() {
   if (!select || !select.value) return;
   const fee = setShippingFromCity(select.value);
   toast(`Delivery fee set to ${fee} EGP for ${select.value}.`, "fa-solid fa-location-dot");
-  setTimeout(() => { window.location.href = "index.html"; }, 700);
+  setTimeout(returnAfterLocation, 700);
 }
 
 function enforceLocationGate() {
   const onLoginPage = window.location.pathname.endsWith("login.html");
-  if (!onLoginPage && !hasShippingSet()) {
+  const onCartPage = window.location.pathname.endsWith("cart.html");
+  // Browsing the shop, product pages, about, contact, etc. never requires
+  // a location — only checking out does, since that's the only place the
+  // delivery fee actually matters.
+  if (onCartPage && !onLoginPage && !hasShippingSet()) {
+    sessionStorage.setItem("HYP3_return_to", window.location.pathname.split("/").pop());
     window.location.href = "login.html";
   }
 }
