@@ -1,6 +1,11 @@
 {
   "name": "hyp3-store",
   "compatibility_date": "2026-09-21",
+  "main": "src/index.js",
+  "assets": {
+    "directory": "./",
+    "binding": "ASSETS"
+  },
   "d1_databases": [
     {
       "binding": "DB",
