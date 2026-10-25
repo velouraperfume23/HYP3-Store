@@ -129,7 +129,7 @@ let appliedPromo = JSON.parse(localStorage.getItem("HYP3_promo")) || null;
    PRODUCT CATALOG — single source of truth for every page
    --------------------------------------------------------------------- */
 const PRODUCTS = [
-  // Women's and Men's fragrances alternating, as requested — 12 of each.
+  // Core men's and women's fragrances.
   { id: 1, name: "HYP3 Rose", category: "Women", image: "img/products/hyp3-rose.svg",
     rating: 5, notes: ["Damask Rose", "Vanilla"],
     desc: "A soft embrace of damask rose warmed by vanilla — romantic, warm, and effortlessly feminine.",
@@ -225,6 +225,39 @@ const PRODUCTS = [
   { id: 24, name: "Azureon", category: "Men", image: "img/products/azureon.svg",
     rating: 4, notes: ["Salty Sea Breeze", "Green Juniper"],
     desc: "Salty sea breeze and green juniper — loud, aquatic, built for summer.",
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
+  // New arrivals checked against the existing catalog before adding.
+  { id: 25, name: "Blue Meridian", category: "Men", image: "img/products/bleu-de-chanel.svg",
+    rating: 5, notes: ["Citrus", "Aromatic Woods", "Incense"],
+    desc: "A fresh, confident blend of citrus, aromatic woods, and incense with a clean, elegant finish.",
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
+  { id: 26, name: "Iron Tempest", category: "Men", image: "img/products/drakkar-noir.svg",
+    rating: 5, notes: ["Lavender", "Aromatic Herbs", "Woods"],
+    desc: "A bold aromatic fragrance with crisp herbs, spice, and a deep woody finish.",
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
+  { id: 27, name: "Vanilla Veil", category: "Women", image: "img/products/kayali-vanilla-28.svg",
+    rating: 5, notes: ["Vanilla", "Brown Sugar", "Tonka"],
+    desc: "A warm gourmand centered on vanilla, brown sugar, tonka, and amber.",
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
+  { id: 28, name: "Midnight Allure", category: "Women", image: "img/products/good-girl.svg",
+    rating: 5, notes: ["Jasmine", "Cocoa", "Tonka"],
+    desc: "A feminine floral gourmand with luminous jasmine, rich cocoa, and warm tonka.",
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
+  { id: 29, name: "Emberwood Crown", category: "Men", image: "img/products/oud.svg",
+    rating: 5, notes: ["Oud", "Amber", "Woods"],
+    desc: "A rich, smoky oud character softened by warm woods and amber.",
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
+  { id: 30, name: "Spice Cipher", category: "Men", image: "img/products/code-mabkhar.svg",
+    rating: 5, notes: ["Warm Spices", "Aromatic Woods"],
+    desc: "A warm, confident fragrance with an aromatic profile and a lingering woody finish.",
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
+  { id: 31, name: "Ivory Radiance", category: "Women", image: "img/products/coco-chanel.svg",
+    rating: 5, notes: ["Floral Notes", "Warm Amber"],
+    desc: "An elegant feminine fragrance with a soft floral character and a warm, sophisticated finish.",
+    sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
+  { id: 32, name: "Golden Reverie", category: "Women", image: "img/products/jadore.svg",
+    rating: 5, notes: ["Ylang-Ylang", "Jasmine", "Rose"],
+    desc: "A radiant floral bouquet with a soft, graceful finish.",
     sizes: [{ label: "30 ML", price: 96.03 }, { label: "50 ML", price: 143.33 }] },
 ];
 
@@ -422,6 +455,7 @@ function renderFavorites() {
 function productCardHTML(p, size) {
   size = size || p.sizes[0];
   const cartKey = `${p.id}-${size.label}`;
+  const safeName = p.name.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
   return `
     <div class="pro" onclick="window.location.href='product.html?id=${p.id}'">
       <div class="img-wrap"><img src="${p.image}" alt="${p.name}"></div>
@@ -431,7 +465,7 @@ function productCardHTML(p, size) {
         <div class="star">${starIcons(p.rating)}</div>
         <h4>${size.price} EG</h4>
       </div>
-      <a href="#" class="quick-add" onclick="event.stopPropagation(); event.preventDefault(); addToCart('${cartKey}', '${p.name} (${size.label})', ${size.price}, '${p.image}', 1)">
+      <a href="#" class="quick-add" onclick="event.stopPropagation(); event.preventDefault(); addToCart('${cartKey}', '${safeName} (${size.label})', ${size.price}, '${p.image}', 1)">
         <i class="fa fa-shopping-cart cart"></i>
       </a>
     </div>`;
@@ -705,7 +739,7 @@ window.addEventListener("DOMContentLoaded", () => {
     renderProductGrid("featured-products", PRODUCTS.slice(0, 4));
   }
   if (document.getElementById("new-arrivals")) {
-    renderProductGrid("new-arrivals", PRODUCTS.slice(4, 8));
+    renderProductGrid("new-arrivals", PRODUCTS.slice(-8).reverse());
   }
   if (document.getElementById("shop-grid")) {
     renderProductGrid("shop-grid", PRODUCTS);
